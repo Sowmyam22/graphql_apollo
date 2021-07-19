@@ -12,7 +12,11 @@ const typeDefs = gql`
 
   type Book {
     title: String
-    author: String
+    author: Author
+  }
+
+  type Author {
+      name: String
   }
 
   type User {
@@ -27,6 +31,7 @@ const typeDefs = gql`
 
   type Query {
     books: [Book]
+    authors: [Author]
     users: [User]
     user(name: String!): User!
   }
@@ -43,11 +48,21 @@ const books = [
     },
 ];
 
+const authors = [
+    {
+        name: 'Kate Chopin',
+    },
+    {
+        name: 'Paul Auster',
+    }
+]
+
 // Resolvers define the technique for fetching the types defined in the
 // schema. This resolver retrieves books from the "books" array above.
 const resolvers = {
     Query: {
         books: () => books,
+        authors: () => authors,
         users: async () => {
             try {
                 const users = await axios.get("https://api.github.com/users");
@@ -75,6 +90,18 @@ const resolvers = {
             }
         }
     },
+
+    Book: {
+        // The parent resolver (Library.books) returns an object with the
+        // author's name in the "author" field. Return a JSON object containing
+        // the name, because this field expects an object.
+        author(parent) {
+            console.log(parent);
+            return {
+                name: parent.author
+            };
+        }
+    }
 };
 
 // The ApolloServer constructor requires two parameters: your schema
@@ -92,6 +119,9 @@ server.listen().then(({ url }) => {
  query GetData($userName: String!) {
   books {
     title
+    author {
+        name
+    }
   }
   users {
     id
