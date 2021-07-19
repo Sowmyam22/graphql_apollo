@@ -46,5 +46,9 @@ mutation createMyPost {
     description
   }
 }
+
+mutation Mutation($deletePostId: ID!) {
+  deletePost(id: $deletePostId)
+}
  */
 

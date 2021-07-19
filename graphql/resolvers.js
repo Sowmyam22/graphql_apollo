@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { findIndex } = require('lodash');
 
 const books = [
     {
@@ -79,6 +80,16 @@ const resolvers = {
             console.log(args);
             posts.push(args);
             return args;
+        },
+
+        deletePost: (_, args) => {
+            console.log(args);
+            const postIndex = findIndex(posts, ['id', args.id]);
+
+            if (postIndex > -1) {
+                posts.splice(postIndex, 1);
+                return true;
+            }
         }
     }
 };
