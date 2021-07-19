@@ -11,7 +11,8 @@ const typeDefs = gql`
 # This "Book" type defines the queryable fields for every book in our data source.
 
   type Book {
-    title: String
+    id: ID!
+    title: String!
     author: Author
   }
 
@@ -25,6 +26,12 @@ const typeDefs = gql`
     avatar_url: String
   }
 
+  type Post {
+      id: ID!
+      title: String!
+      description: String!
+  }
+
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each. In this
   # case, the "books" query returns an array of zero or more Books (defined above).
@@ -34,15 +41,22 @@ const typeDefs = gql`
     authors: [Author]
     users: [User]
     user(name: String!): User!
+    posts: [Post]
+  }
+
+  type Mutation {
+      createPost(id: ID!, title: String!, description: String!): Post
   }
 `;
 
 const books = [
     {
+        id: 1,
         title: 'The Awakening',
         author: 'Kate Chopin',
     },
     {
+        id: 2,
         title: 'City of Glass',
         author: 'Paul Auster',
     },
@@ -54,6 +68,9 @@ const authors = [
     },
     {
         name: 'Paul Auster',
+    },
+    {
+        name: 'Sowmya',
     }
 ]
 
@@ -88,7 +105,8 @@ const resolvers = {
             } catch (error) {
                 throw error;
             }
-        }
+        },
+        posts: () => posts,
     },
 
     Book: {
@@ -100,6 +118,13 @@ const resolvers = {
             return {
                 name: parent.author
             };
+        }
+    },
+
+    Mutation: {
+        createPost: (_, args) => {
+            console.log(args);
+            return args;
         }
     }
 };
@@ -132,6 +157,14 @@ server.listen().then(({ url }) => {
     id
     login
     avatar_url
+  }
+}
+
+mutation createMyPost {
+  createPost(id: 1, title: "New_post_1", description: "This is some description"){
+    id
+    title
+    description
   }
 }
  */
