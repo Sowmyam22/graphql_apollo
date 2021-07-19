@@ -74,6 +74,8 @@ const authors = [
     }
 ]
 
+const posts = [];
+
 // Resolvers define the technique for fetching the types defined in the
 // schema. This resolver retrieves books from the "books" array above.
 const resolvers = {
@@ -124,6 +126,7 @@ const resolvers = {
     Mutation: {
         createPost: (_, args) => {
             console.log(args);
+            posts.push(args);
             return args;
         }
     }
@@ -157,6 +160,11 @@ server.listen().then(({ url }) => {
     id
     login
     avatar_url
+  }
+  posts {
+    id
+    title
+    description
   }
 }
 
